@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intapp Interface Tour</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .tour-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tour-header {
+            background: linear-gradient(135deg, #385b0c, #abb18a);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .tour-header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .tour-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .interface-container {
+            position: relative;
+            background: white;
+        }
+
+        .interface-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .hotspot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #385b0c;
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .hotspot:hover {
+            transform: scale(1.2);
+            background: #4a5568;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .hotspot.active {
+            background: #abb18a;
+            transform: scale(1.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(171, 177, 138, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(171, 177, 138, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(171, 177, 138, 0); }
+        }
+
+        .description-panel {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            width: 350px;
+            background: white;
+            border: 2px solid #385b0c;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .description-panel.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .description-header {
+            color: #385b0c;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .description-text {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .play-button {
+            background: #385b0c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            background: #4a5568;
+            transform: scale(1.1);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #4a5568;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover {
+            color: #385b0c;
+        }
+
+        .tour-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border: 2px solid #abb18a;
+        }
+
+        .control-button {
+            background: #abb18a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .control-button:hover {
+            background: #385b0c;
+            transform: translateY(-2px);
+        }
+
+        .control-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: #385b0c;
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        .instruction-text {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(56, 91, 12, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 50;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .description-panel {
+                position: fixed;
+                top: auto;
+                bottom: 80px;
+                right: 20px;
+                left: 20px;
+                width: auto;
+                transform: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tour-container {
+                margin: 10px;
+            }
+            
+            .hotspot {
+                width: 25px;
+                height: 25px;
+                font-size: 12px;
+            }
+            
+            .description-panel {
+                bottom: 100px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="instruction-text" id="instructionText">Click on the numbered hotspots to learn about each Intapp feature</div>
+
+    <div class="tour-container">
+        <div class="tour-header">
+            <h1>Intapp Time Tracking Interface Tour</h1>
+            <p>Learn the essential features for accurate time tracking and billing</p>
+        </div>
+
+        <div class="interface-container">
+            <!-- Recreated Intapp interface based on screenshot -->
+            <div style="background: #2c3e50; color: white; padding: 10px; font-size: 14px;">
+                <span>◆ Intapp Time - Time Desktop (Production, US) - McLean, Tiffany D (T6048)</span>
+                <span style="float: right;">— □ ×</span>
+            </div>
+            
+            <div style="background: #34495e; color: white; padding: 15px; display: flex; gap: 20px; align-items: center;">
+                <div class="hotspot" data-target="list" style="position: relative; margin-right: 30px;">1</div>
+                <span style="margin-left: -50px;">List</span>
+                
+                <div class="hotspot" data-target="calendar" style="position: relative; margin-right: 30px;">2</div>
+                <span style="margin-left: -50px;">Calendar</span>
+                
+                <div class="hotspot" data-target="planner" style="position: relative; margin-right: 30px;">3</div>
+                <span style="margin-left: -50px;">Planner</span>
+                
+                <div class="hotspot" data-target="templates" style="position: relative; margin-right: 30px;">4</div>
+                <span style="margin-left: -50px;">Templates</span>
+                
+                <div class="hotspot" data-target="timer" style="position: relative; margin-right: 30px;">5</div>
+                <span style="margin-left: -50px;">Timer</span>
+            </div>
+
+            <div style="background: #ecf0f1; padding: 20px;">
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <button style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px;">+ New</button>
+                    <button style="background: #95a5a6; color: white; border: none; padding: 8px 15px; border-radius: 4px;">Release</button>
+                    <button style="background: #95a5a6; color: white; border: none; padding: 8px 15px; border-radius: 4px;">Open</button>
+                    <button style="background: #95a5a6; color: white; border: none; padding: 8px 15px; border-radius: 4px;">More Actions</button>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <h2 style="color: #2c3e50;">< Tuesday, July 22, 2025 ></h2>
+                </div>
+
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 1;">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px;">Time Entries</h3>
+                        <div style="background: white; border: 1px solid #bdc3c7; border-radius: 4px; padding: 20px; min-height: 200px;">
+                            <p style="color: #7f8c8d;">0 Entries</p>
+                            <div style="margin-top: 20px; font-size: 12px; color: #95a5a6;">
+                                🔽 Filters | Drag column headers here to group
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px; font-weight: bold; font-size: 12px; color: #2c3e50;">
+                                <span>Status</span>
+                                <span>Timer</span>
+                                <span>Client</span>
+                                <span>Client Name</span>
+                                <span>Matter</span>
+                                <span>Matter Name</span>
+                                <span>Narrative</span>
+                                <span>Hours</span>
+                                <span>Country Code</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="flex: 1;">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px;">Captured Time</h3>
+                        <div style="background: white; border: 1px solid #bdc3c7; border-radius: 4px; padding: 20px; min-height: 200px;">
+                            <p style="color: #7f8c8d;">0 Captured Activities</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom status bar with hotspots -->
+                <div style="background: #bdc3c7; padding: 10px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; position: relative;">
+                    <div style="display: flex; gap: 30px; align-items: center;">
+                        <div style="position: relative;">
+                            <div class="hotspot" data-target="unreleased" style="position: absolute; top: -40px; left: 0;">6</div>
+                            <span style="color: #e74c3c; font-weight: bold;">0.00 h</span><br>
+                            <span style="font-size: 12px; color: #2c3e50;">Unreleased</span>
+                        </div>
+                        <div style="position: relative;">
+                            <div class="hotspot" data-target="released" style="position: absolute; top: -40px; left: 0;">7</div>
+                            <span style="color: #27ae60; font-weight: bold;">0.00 h</span><br>
+                            <span style="font-size: 12px; color: #2c3e50;">Released</span>
+                        </div>
+                        <div style="position: relative;">
+                            <div class="hotspot" data-target="converted" style="position: absolute; top: -40px; left: 0;">8</div>
+                            <span style="color: #7f8c8d; font-weight: bold;">0.00 h</span><br>
+                            <span style="font-size: 12px; color: #2c3e50;">Converted</span>
+                        </div>
+                        <div style="position: relative;">
+                            <div class="hotspot" data-target="captured" style="position: absolute; top: -40px; left: 0;">9</div>
+                            <span style="color: #95a5a6; font-weight: bold;">0.00 h</span><br>
+                            <span style="font-size: 12px; color: #2c3e50;">Captured</span>
+                        </div>
+                        <div style="position: relative;">
+                            <div class="hotspot" data-target="billable" style="position: absolute; top: -40px; left: 0;">10</div>
+                            <span style="color: #3498db; font-weight: bold;">0.00 h</span><br>
+                            <span style="font-size: 12px; color: #2c3e50;">Billable</span>
+                        </div>
+                        <div style="position: relative;">
+                            <div class="hotspot" data-target="nonbillable" style="position: absolute; top: -40px; left: 0;">11</div>
+                            <span style="color: #9b59b6; font-weight: bold;">0.00 h</span><br>
+                            <span style="font-size: 12px; color: #2c3e50;">Non-Billable</span>
+                        </div>
+                        <div style="position: relative;">
+                            <div class="hotspot" data-target="probono" style="position: absolute; top: -40px; left: 0;">12</div>
+                            <span style="color: #e67e22; font-weight: bold;">0.00 h</span><br>
+                            <span style="font-size: 12px; color: #2c3e50;">Pro Bono</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 18px; color: #2c3e50; font-weight: bold;">
+                        0.00 h Total
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description Panel -->
+    <div class="description-panel" id="descriptionPanel">
+        <button class="close-button" onclick="closeDescription()">×</button>
+        <div class="description-header" id="descriptionHeader">
+            <span id="featureIcon">📋</span>
+            <span id="featureName">Feature Name</span>
+        </div>
+        <div class="description-text" id="descriptionText">
+            Description will appear here...
+        </div>
+        <div class="audio-controls">
+            <button class="play-button" id="playButton" onclick="playAudio()">
+                ▶
+            </button>
+            <span style="font-size: 12px; color: #4a5568;">Click to hear description</span>
+        </div>
+    </div>
+
+    <!-- Tour Controls -->
+    <div class="tour-controls">
+        <button class="control-button" onclick="previousStep()" id="prevButton">← Previous</button>
+        <span style="color: #4a5568; padding: 0 15px;" id="stepCounter">Step 1 of 12</span>
+        <button class="control-button" onclick="nextStep()" id="nextButton">Next →</button>
+        <button class="control-button" onclick="startAutoTour()" id="autoButton">Auto Tour</button>
+    </div>
+
+    <script>
+        // Audio file URLs
+        const audioUrls = {
+            list: "https://drive.google.com/uc?export=download&id=1pO1LTEC5ENKmF-_LUT2lZtMUxQvRDn89",
+            calendar: "https://drive.google.com/uc?export=download&id=1UMv7eK_CfldHLPT6PdNNd-1Yj3zQLsfr",
+            planner: "https://drive.google.com/uc?export=download&id=1EBm4XAh1u1G0G-LgJha3Pi2Rxcb6M-1Z",
+            templates: "https://drive.google.com/uc?export=download&id=1NYAT7nhVlF3jYESGQ83yeSKFKrUqivlA",
+            timer: "https://drive.google.com/uc?export=download&id=1RtpOEQy8SfdxETQ9JKVFPe41c1CHSVE7",
+            unreleased: "https://drive.google.com/uc?export=download&id=1wF-7csEa8a9zl3pF6VDrKDhs0TRoCGOf",
+            released: "https://drive.google.com/uc?export=download&id=14t44gNknHlGHLh_8T_dychU_SUCPfGS9",
+            converted: "https://drive.google.com/uc?export=download&id=1v75tBLoROqoJGfd7ikqpNAL0IFr1I-dJ",
+            captured: "https://drive.google.com/uc?export=download&id=1GBNMJdwjXZK-KlQvKXR75Gttb-DjJ8QE",
+            billable: "https://drive.google.com/uc?export=download&id=1F0vuK4KxrBUDNXcZjgqPF3zxq0w2L0tV",
+            nonbillable: "https://drive.google.com/uc?export=download&id=1e3lKgvjnW1pspw2JYFotsiEkNmJxu1Lu",
+            probono: "https://drive.google.com/uc?export=download&id=1SvSEJZjIs5enDsZFXy4KStUc4WMNNiEG"
+        };
+
+        const tourData = {
+            list: {
+                name: "List View",
+                icon: "📋",
+                description: "The List view displays all your time entries in a detailed table format, making it easy to review and manage multiple entries at once. You can sort, filter, and edit your time entries directly from this comprehensive view.",
+                audio: "The List view displays all your time entries in a detailed table format, making it easy to review and manage multiple entries at once. You can sort, filter, and edit your time entries directly from this comprehensive view."
+            },
+            calendar: {
+                name: "Calendar View", 
+                icon: "📅",
+                description: "The Calendar view shows your time entries organized by date, providing a visual timeline of your work activities. This view helps you identify gaps in your time tracking and ensures complete daily coverage.",
+                audio: "The Calendar view shows your time entries organized by date, providing a visual timeline of your work activities. This view helps you identify gaps in your time tracking and ensures complete daily coverage."
+            },
+            planner: {
+                name: "Planner",
+                icon: "📊",
+                description: "The Planner helps you organize and schedule your upcoming work activities and time tracking goals. Use this feature to plan your day efficiently and ensure you capture all billable activities.",
+                audio: "The Planner helps you organize and schedule your upcoming work activities and time tracking goals. Use this feature to plan your day efficiently and ensure you capture all billable activities."
+            },
+            templates: {
+                name: "Templates",
+                icon: "📄",
+                description: "Templates allow you to save frequently used time entry formats for quick reuse on similar tasks or recurring matters. This feature significantly speeds up your time entry process and ensures consistency across similar activities.",
+                audio: "Templates allow you to save frequently used time entry formats for quick reuse on similar tasks or recurring matters. This feature significantly speeds up your time entry process and ensures consistency across similar activities."
+            },
+            timer: {
+                name: "Timer",
+                icon: "⏱️",
+                description: "The Timer function lets you track time in real-time as you work on tasks, ensuring accurate capture of all billable hours. Simply start the timer when beginning work and stop it when finished for precise time recording.",
+                audio: "The Timer function lets you track time in real-time as you work on tasks, ensuring accurate capture of all billable hours. Simply start the timer when beginning work and stop it when finished for precise time recording."
+            },
+            unreleased: {
+                name: "Unreleased Time",
+                icon: "🔒",
+                description: "Unreleased time represents hours you've recorded but haven't yet submitted for review or billing. These entries remain editable and can be modified before you release them to your supervisor or billing department.",
+                audio: "Unreleased time represents hours you've recorded but haven't yet submitted for review or billing. These entries remain editable and can be modified before you release them to your supervisor or billing department."
+            },
+            released: {
+                name: "Released Time",
+                icon: "✅",
+                description: "Released time shows hours that have been submitted for review and are no longer editable by you. Once time is released, it typically requires supervisor approval before moving to the next stage in the billing process.",
+                audio: "Released time shows hours that have been submitted for review and are no longer editable by you. Once time is released, it typically requires supervisor approval before moving to the next stage in the billing process."
+            },
+            converted: {
+                name: "Converted Time",
+                icon: "🔄",
+                description: "Converted time indicates hours that have been processed and transformed into billable entries ready for client invoicing. This status shows that your time has been approved and is now part of the official billing system.",
+                audio: "Converted time indicates hours that have been processed and transformed into billable entries ready for client invoicing. This status shows that your time has been approved and is now part of the official billing system."
+            },
+            captured: {
+                name: "Captured Time",
+                icon: "📡",
+                description: "Captured time refers to hours automatically detected by Intapp's monitoring features based on your computer activity. This passive tracking helps ensure no billable time is missed, though you should always review and confirm captured entries.",
+                audio: "Captured time refers to hours automatically detected by Intapp's monitoring features based on your computer activity. This passive tracking helps ensure no billable time is missed, though you should always review and confirm captured entries."
+            },
+            billable: {
+                name: "Billable Time",
+                icon: "💰",
+                description: "Billable time represents hours that can be charged directly to clients and included in their invoices. This is typically the primary focus for associates, as billable hours directly contribute to firm revenue and client billing.",
+                audio: "Billable time represents hours that can be charged directly to clients and included in their invoices. This is typically the primary focus for associates, as billable hours directly contribute to firm revenue and client billing."
+            },
+            nonbillable: {
+                name: "Non-Billable Time",
+                icon: "📚",
+                description: "Non-billable time includes important work activities that cannot be charged to clients, such as training, administrative tasks, or business development. While not directly revenue-generating, these hours are still valuable for tracking your total work contribution.",
+                audio: "Non-billable time includes important work activities that cannot be charged to clients, such as training, administrative tasks, or business development. While not directly revenue-generating, these hours are still valuable for tracking your total work contribution."
+            },
+            probono: {
+                name: "Pro Bono Time",
+                icon: "🤝",
+                description: "Pro bono time tracks hours spent on charitable legal work provided free of charge to clients who cannot afford legal services. These hours demonstrate the firm's commitment to public service and are often required for bar association reporting.",
+                audio: "Pro bono time tracks hours spent on charitable legal work provided free of charge to clients who cannot afford legal services. These hours demonstrate the firm's commitment to public service and are often required for bar association reporting."
+            }
+        };
+
+        let currentStep = 0;
+        const steps = ['list', 'calendar', 'planner', 'templates', 'timer', 'unreleased', 'released', 'converted', 'captured', 'billable', 'nonbillable', 'probono'];
+        let autoTourInterval;
+        let currentAudio;
+
+        // Initialize tour and load voices
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStepCounter();
+            updateProgressBar();
+        });
+
+        // Hotspot click handlers
+        document.querySelectorAll('.hotspot').forEach(hotspot => {
+            hotspot.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                showDescription(target);
+                currentStep = steps.indexOf(target);
+                updateStepCounter();
+                updateProgressBar();
+                highlightCurrentHotspot();
+            });
+        });
+
+        function showDescription(feature) {
+            const data = tourData[feature];
+            document.getElementById('featureIcon').textContent = data.icon;
+            document.getElementById('featureName').textContent = data.name;
+            document.getElementById('descriptionText').textContent = data.description;
+            document.getElementById('descriptionPanel').classList.add('show');
+            
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            
+            // Reset play button
+            document.getElementById('playButton').textContent = '▶';
+        }
+
+        function closeDescription() {
+            document.getElementById('descriptionPanel').classList.remove('show');
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+        }
+
+        function playAudio() {
+            const feature = steps[currentStep];
+            
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            
+            // Get the audio URL for the current feature
+            const audioUrl = audioUrls[feature];
+            
+            if (!audioUrl) {
+                console.log(`No audio URL found for: ${feature}. Using text-to-speech fallback.`);
+                playTextToSpeech(feature);
+                return;
+            }
+            
+            console.log(`Trying to play: ${audioUrl}`);
+            currentAudio = new Audio(audioUrl);
+            
+            currentAudio.onloadstart = function() {
+                document.getElementById('playButton').textContent = '⏸';
+            };
+            
+            currentAudio.onplay = function() {
+                document.getElementById('playButton').textContent = '⏸';
+                console.log(`Successfully playing: ${feature} audio`);
+            };
+            
+            currentAudio.onended = function() {
+                document.getElementById('playButton').textContent = '▶';
+                currentAudio = null;
+            };
+            
+            currentAudio.onerror = function() {
+                console.log(`Failed to load audio for: ${feature}. Using text-to-speech fallback.`);
+                playTextToSpeech(feature);
+            };
+            
+            currentAudio.play().catch(function(error) {
+                console.log(`Failed to play audio for: ${feature}. Using text-to-speech fallback.`);
+                console.error(error);
+                playTextToSpeech(feature);
+            });
+        }
+        
+        function playTextToSpeech(feature) {
+            const text = tourData[feature].audio;
+            
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+            
+            // Use Web Speech API as fallback
+            if ('speechSynthesis' in window) {
+                currentAudio = new SpeechSynthesisUtterance(text);
+                
+                // Configure voice settings for more natural speech
+                currentAudio.rate = 0.85;
+                currentAudio.pitch = 1.1;
+                currentAudio.volume = 1;
+                
+                // Try to find the best available voice
+                const voices = speechSynthesis.getVoices();
+                const preferredVoiceNames = [
+                    'Microsoft Zira Desktop',
+                    'Microsoft Zira',
+                    'Google US English Female',
+                    'Microsoft Eva Desktop',
+                    'Microsoft Eva',
+                    'Samantha',
+                    'Karen',
+                    'Moira',
+                    'Tessa'
+                ];
+                
+                let selectedVoice = null;
+                for (const voiceName of preferredVoiceNames) {
+                    selectedVoice = voices.find(voice => 
+                        voice.name.includes(voiceName) && 
+                        voice.lang.includes('en-US')
+                    );
+                    if (selectedVoice) break;
+                }
+                
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(voice => 
+                        voice.lang.includes('en-US') && 
+                        (voice.name.toLowerCase().includes('female') || 
+                         voice.name.toLowerCase().includes('woman') ||
+                         voice.gender === 'female')
+                    );
+                }
+                
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(voice => voice.lang.includes('en-US'));
+                }
+                
+                if (selectedVoice) {
+                    currentAudio.voice = selectedVoice;
+                }
+                
+                // Add natural pauses and emphasis
+                const naturalText = text
+                    .replace(/\./g, '... ')
+                    .replace(/,/g, ', ')
+                    .replace(/Intapp/g, 'Int-app')
+                    .replace(/billable/g, 'bill-able')
+                    .replace(/non-billable/g, 'non bill-able');
+                
+                currentAudio.text = naturalText;
+                
+                currentAudio.onstart = function() {
+                    document.getElementById('playButton').textContent = '⏸';
+                };
+                
+                currentAudio.onend = function() {
+                    document.getElementById('playButton').textContent = '▶';
+                    currentAudio = null;
+                };
+                
+                speechSynthesis.speak(currentAudio);
+            } else {
+                alert('Audio not available. Please check your browser settings.');
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                showDescription(steps[currentStep]);
+                updateStepCounter();
+                updateProgressBar();
+                highlightCurrentHotspot();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showDescription(steps[currentStep]);
+                updateStepCounter();
+                updateProgressBar();
+                highlightCurrentHotspot();
+            }
+        }
+
+        function startAutoTour() {
+            const autoButton = document.getElementById('autoButton');
+            
+            if (autoTourInterval) {
+                clearInterval(autoTourInterval);
+                autoTourInterval = null;
+                autoButton.textContent = 'Auto Tour';
+                return;
+            }
+            
+            autoButton.textContent = 'Stop Auto';
+            currentStep = 0;
+            showDescription(steps[currentStep]);
+            updateStepCounter();
+            updateProgressBar();
+            highlightCurrentHotspot();
+            
+            autoTourInterval = setInterval(() => {
+                if (currentStep < steps.length - 1) {
+                    nextStep();
+                } else {
+                    clearInterval(autoTourInterval);
+                    autoTourInterval = null;
+                    autoButton.textContent = 'Auto Tour';
+                }
+            }, 4000);
+        }
+
+        function updateStepCounter() {
+            document.getElementById('stepCounter').textContent = `Step ${currentStep + 1} of ${steps.length}`;
+            
+            // Update button states
+            document.getElementById('prevButton').disabled = currentStep === 0;
+            document.getElementById('nextButton').disabled = currentStep === steps.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentStep + 1) / steps.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function highlightCurrentHotspot() {
+            // Remove active class from all hotspots
+            document.querySelectorAll('.hotspot').forEach(hotspot => {
+                hotspot.classList.remove('active');
+            });
+            
+            // Add active class to current hotspot
+            const currentHotspot = document.querySelector(`[data-target="${steps[currentStep]}"]`);
+            if (currentHotspot) {
+                currentHotspot.classList.add('active');
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextStep();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousStep();
+            } else if (e.key === 'Escape') {
+                closeDescription();
+            }
+        });
+    </script>
+</body>
+</html>
